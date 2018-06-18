@@ -38,3 +38,11 @@ main = do
 
       -- Merge "dependencies" files for each project.
       cmd_ ("sort" :: String) (FileStdout out) ("-u" : dependencies)
+
+
+
+    -- "*.dependencies" recipe - Collect dependencies for a project.
+    "*.dependencies" %> \out ->
+
+      -- List external dependencies for project without base dependencies.
+      cmd_ ("stack" :: String) (Cwd ("projects" </> dropExtension out)) (FileStdout out) [ "ls" :: String, "dependencies", "--external", "--no-include-base" ]
