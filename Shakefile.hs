@@ -21,8 +21,8 @@ main = do
 
 
 
-    -- Build the "dependencies" file if necessary.
-    want [ "dependencies" ]
+    -- Build the "Dockerfile" file if necessary.
+    want [ "Dockerfile" ]
 
 
 
@@ -57,3 +57,26 @@ main = do
 
       -- Cut off the version column.
       cmd_ ("cut" :: String) (FileStdin (dropExtension out)) (FileStdout out) [ "-d" :: String, " ", "-f1" ]
+
+
+
+    -- "Dockerfile" recipe - Buld a Dockerfile that builds all dependencies.
+    "Dockerfile" %> \out -> do
+
+      -- Base Docker image to use, read from a file, and trakced as a shake dependency.
+      from <- readFile' "FROM"
+
+      -- Stack resolver to use.
+      resolver <- readFile' "RESOLVER"
+
+      -- Get "dependencies" file contents, remove "rts".
+      dependencies <- readFileLines "dependencies"
+      let dependencies' = dependencies \\ [ "rts" ]
+
+      -- Write the Dockerfile out.
+      writeFileLines out $
+        [ "FROM " <> from
+        , "RUN stack build --resolver " <> resolver <> " \\"
+        ]
+        <> map (\dependency -> dependency <> " \\") (init dependencies')
+        <> [ last dependencies' ]
