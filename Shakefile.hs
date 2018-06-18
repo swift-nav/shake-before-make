@@ -32,6 +32,10 @@ main = do
       -- List out projects under "projects", tracking the result as a shake dependency.
       projects <- getDirectoryDirs "projects"
 
+      -- Ensure the projects are sync'd up to origin/master.
+      let masters = map (\project -> addExtension project "master") projects
+      need masters
+
       -- Build the "dependencies" file (without versions) for each project if necessary.
       let dependencies = map (\project -> addExtension project "dependencies.versionless") projects
       need dependencies
@@ -95,3 +99,21 @@ main = do
 
       -- Build all dependencies.
       cmd_ ("stack" :: String) ("build" : "--resolver" : resolver : dependencies')
+
+
+
+    -- "*.master" recipe - If local version does not match remote version, sync up.
+    "*.master" %> \out -> do
+
+      -- Get local version contents to compare with.
+      local <- readFile' (addExtension (dropExtension out) "local")
+
+      -- Get remote version contents to compare with.
+      remote <- readFile' (addExtension (dropExtension out) "remote")
+
+      -- If local version does not match remote version, sync local version to remote version.
+      unless (local == remote) $
+        cmd_ ("git" :: String) (Cwd ("projects" </> dropExtension out)) [ "reset" :: String, "--hard", "origin/master" ]
+
+      -- Write out remote version.
+      writeFileChanged out remote
