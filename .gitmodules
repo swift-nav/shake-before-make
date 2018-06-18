@@ -1,0 +1,6 @@
+[submodule "projects/wolf"]
+	path = projects/wolf
+	url = git@github.com:swift-nav/wolf.git
+[submodule "projects/warped"]
+	path = projects/warped
+	url = git@github.com:swift-nav/warped.git
