@@ -137,3 +137,19 @@ main = do
       -- Fetch from origin, then find remote origin/master version of the project.
       cmd_ ("git" :: String) (Cwd ("projects" </> dropExtension out)) [ "fetch" :: String, "origin" ]
       cmd ("git" :: String) (Cwd ("projects" </> dropExtension out)) (FileStdout out) [ "rev-parse" :: String, "origin/master" ]
+
+
+
+    -- "clean" phony recipe - remove generated files.
+    "clean" ~>
+
+      -- Remove Dockerfile and generated files.
+      removeFilesAfter "."
+        [ "Dockerfile"
+        , "dependencies"
+        , "*.dependencies"
+        , "*.versionless"
+        , "*.master"
+        , "*.local"
+        , "*.remote"
+        ]
