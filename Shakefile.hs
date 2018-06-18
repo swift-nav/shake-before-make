@@ -106,10 +106,10 @@ main = do
     "*.master" %> \out -> do
 
       -- Get local version contents to compare with.
-      local <- readFile' (addExtension (dropExtension out) "local")
+      local <- readFile' (out -<.> "local")
 
       -- Get remote version contents to compare with.
-      remote <- readFile' (addExtension (dropExtension out) "remote")
+      remote <- readFile' (out -<.> "remote")
 
       -- If local version does not match remote version, sync local version to remote version.
       unless (local == remote) $
