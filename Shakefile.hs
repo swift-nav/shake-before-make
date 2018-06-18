@@ -80,3 +80,18 @@ main = do
         ]
         <> map (\dependency -> dependency <> " \\") (init dependencies')
         <> [ last dependencies' ]
+
+
+
+    -- "build" phony recipe - build all of the dependencies locally.
+    "build" ~> do
+
+      -- Stack resolver to use.
+      resolver <- readFile' "RESOLVER"
+
+      -- Get "dependencies" file contents, remove "rts".
+      dependencies <- readFileLines "dependencies"
+      let dependencies' = dependencies \\ [ "rts" ]
+
+      -- Build all dependencies.
+      cmd_ ("stack" :: String) ("build" : "--resolver" : resolver : dependencies')
