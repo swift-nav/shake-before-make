@@ -1,3 +1,6 @@
 .shake/
 .stack-work/
 *dependencies*
+*.local
+*.remote
+*.master
