@@ -2,7 +2,7 @@
 
 Papers, code, and presentation material.
 
-+ [Slides](Shake.key)
++ [Slides](Shake.pdf)
 + [Shake Before Building](shake-before-building.pdf)
 + [Non-recursive Make Considered Harmful](non-recursive-make-considerered-harmful.pdf)
 + [Build Systems à la Carte](build-systems-a-la-carte.pdf)
